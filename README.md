@@ -14,7 +14,7 @@ Drop-in router with transitions for animated, single page apps.
 
 ## Usage
 
-To be able to provide animated route transitions, *TransitRouter* (and *Transit* underneath) works by action delegation: it will directly emit `Effects Action` by knowing how to wrap his own `TransitRouter.Action` type into your app's `Action` type. This is why the `actionWrapper` is needed in config below.
+To be able to provide animated route transitions, **TransitRouter** (and **Transit** underneath) works by action delegation: it will directly emit `Effects Action` by knowing how to wrap his own `TransitRouter.Action` type into your app's `Action` type. This is why the `actionWrapper` is needed in config below.
 
 
 ### Model
@@ -25,20 +25,20 @@ Say you have an `Action` type wrapping `TransitRouter.Action`:
 type Action = Foo | ... | RouterAction TransitRouter.Action | NoOp
 ```
 
-Also a `Route` type, and a `String -> Route` function .
+Also a `Route` type to describe all routes in your apps:
 
 ```elm
-type Route = Home | About | NotFound | EmptyRoute
+type Route = Home | ... | NotFound | EmptyRoute
 ```
 
-You can then extend your model with `WithRoute` on `Route` type:
+You must then extend your model with `WithRoute` on `Route` type:
 
 ```elm
 type alias Model = TransitRouter.WithRoute Route 
   { foo: String }
 ```
 
-And initialize it with an empty route that should render nothing in your view, to avoid flickering on app init.
+Your `Model` is now enabled to work with `TransitRouter`. Initialize it with an empty route that should render nothing in your view, to avoid content flashing on app init.
 
 ```elm
 initialModel : Model
@@ -70,10 +70,10 @@ routerConfig :
 * `actionWrapper` is used to transform internal `TransitAction.Action` to your own `Action`.
 
 * `routeDecoder` takes the current path as input and should return the associated route.
-See my package [elm-route-parser](http://package.elm-lang.org/packages/etaque/elm-route-parser/latest) for this.
+See my package [elm-route-parser](http://package.elm-lang.org/packages/etaque/elm-route-parser/latest) for help on this.
 
 
-It's time to wire `init` and `update` functions :
+It's now time to wire `init` and `update` functions:
 
 ```elm
 init : String -> (Model, Effects Action)
