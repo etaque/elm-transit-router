@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "summary": "Drop-in router for single page apps, with transitions",
+    "summary": "Drop-in router with animated transitions for single page apps",
     "repository": "https://github.com/etaque/elm-transit-router.git",
     "license": "BSD3",
     "source-directories": [
