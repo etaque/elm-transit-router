@@ -1,6 +1,7 @@
 module TransitRouter
   ( WithRoute, TransitRouter, Action, Config
   , pathUpdates, empty, init, update
+  , getRoute, getTransition
   ) where
 
 {-|
@@ -11,7 +12,11 @@ Drop-in router with transitions for animated, single page apps. See README for u
 
 # Actions
 @docs pathUpdates, empty, init, update
+
+# Views
+@docs getRoute, getTransition
 -}
+
 
 import History
 import Effects exposing (Effects, Never, none)
@@ -48,18 +53,16 @@ pathUpdates =
 
 
 {-| Config record for router behaviour:
- * `updateRoute`: what should be the result of a route update (previous route, new route, model) on your model & effects
- * `actionWrapper`: to wrap router actions into your own action type, to be consistent with `updateRoute` result
+ * `mountRoute`: what should be the result of a route update (previous route, new route, model) on your model & effects
+ * `getDurations`: durations for `Enter` (before `routeUpdate`) and `Exit` (after) phases, same params as `mountRoute`
+ * `actionWrapper`: wrapper for router actions into your own action type, to be consistent with `mountRoute` result
  * `routeDecoder`: to transform a path to a route (see `etaque/elm-route-decoder`)
- * `exitDuration`: duration of the `Exit` phase of the route transition (before `updateRoute` occurs)
- * `enterDuration`: duration of the `Enter` phase of the route transition (after `updateRoute` occurs)
  -}
 type alias Config route action model =
-  { updateRoute : route -> route -> (WithRoute route model) -> Response (WithRoute route model) action
+  { mountRoute : route -> route -> (WithRoute route model) -> Response (WithRoute route model) action
+  , getDurations : route -> route -> (WithRoute route model) -> (Float, Float)
   , actionWrapper : Action route -> action
   , routeDecoder : String -> route
-  , exitDuration : Float
-  , enterDuration : Float
   }
 
 
@@ -110,8 +113,10 @@ update config action model =
 
     PathUpdated path ->
       let
-        route = config.routeDecoder path
-        timeline = Transit.timeline config.exitDuration (SetRoute route) config.enterDuration
+        state = getState model
+        newRoute = config.routeDecoder path
+        (exit, enter) = config.getDurations state.route newRoute model
+        timeline = Transit.timeline exit (SetRoute newRoute) enter
       in
         Transit.init TransitAction timeline (getState model)
           |> mapBoth (setState model) config.actionWrapper
@@ -122,7 +127,7 @@ update config action model =
         prevRoute = state.route
         newModel = setState model { state | route = route }
       in
-        config.updateRoute prevRoute route newModel
+        config.mountRoute prevRoute route newModel
 
     TransitAction transitAction ->
       Transit.update TransitAction transitAction (getState model)
@@ -130,3 +135,17 @@ update config action model =
 
     NoOp ->
       res model none
+
+
+{-| Get current route from model -}
+getRoute : WithRoute route model -> route
+getRoute model =
+  getState model |> .route
+
+
+{-| Get current transition from model.
+See etaque/elm-transit for transition handling.
+-}
+getTransition : WithRoute route model -> Transit.Transition
+getTransition model =
+  getState model |> .transition
