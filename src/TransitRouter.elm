@@ -1,7 +1,7 @@
 module TransitRouter
   ( WithRoute, TransitRouter, Action, Config
-  , pathUpdates, empty, init, update
-  , getRoute, getTransition
+  , actions, empty, init, update
+  , getRoute, getTransition, pushPathAddress
   ) where
 
 {-|
@@ -11,16 +11,17 @@ Drop-in router with transitions for animated, single page apps. See README for u
 @docs WithRoute, TransitRouter, Action, Config
 
 # Actions
-@docs pathUpdates, empty, init, update
+@docs actions, empty, init, update
 
 # Views
-@docs getRoute, getTransition
+@docs getRoute, getTransition, pushPathAddress
 -}
 
 
 import History
 import Effects exposing (Effects, Never, none)
 import Task exposing (Task)
+import Signal exposing (..)
 
 import Transit
 import Response exposing (..)
@@ -47,9 +48,35 @@ type Action route =
 
 
 {-| Signal for path updates, feed your app with this as input. -}
-pathUpdates : Signal (Action route)
-pathUpdates =
-  Signal.map PathUpdated History.path
+actions : Signal (Action route)
+actions =
+  Signal.mergeMany
+    [ Signal.map PathUpdated History.path
+    , mailbox.signal
+    ]
+
+
+{-| Private. -}
+mailbox : Mailbox (Action route)
+mailbox =
+  Signal.mailbox NoOp
+
+
+{-| Address for path updates. Can be used to create a click handler:
+
+    clickTo : String -> List Attribute
+    clickTo path =
+      [ href path
+      , onWithOptions
+          "click"
+          { stopPropagation = True, preventDefault = True }
+          Json.value
+          (\_ -> message TransitRouter.pushPathAddress path)
+      ]
+ -}
+pushPathAddress : Address String
+pushPathAddress =
+  Signal.forwardTo mailbox.address PushPath
 
 
 {-| Config record for router behaviour:
