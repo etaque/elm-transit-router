@@ -1,6 +1,6 @@
 # Elm Transit Router
 
-Drop-in router with transitions for animated, single page apps.
+Drop-in router with animated route transitions for single page apps.
 
     elm package install etaque/elm-transit-router
 
@@ -83,6 +83,8 @@ init path =
 
 This will parse and mount initial route on app init. You can get initial path value by setting up a `port` in main and provide current path from JS side.
 
+Delegate `RouterAction` to `update`, that will take care of routes updates and transition control.
+
 ```elm
 update : Action -> Model -> (Model, Effects Action)
 update action model =
@@ -100,3 +102,42 @@ update action model =
 
 
 ### View
+
+This is where visible part of routing happens. You just have to match current route to render the current route's view, using `getRoute`:
+
+
+```elm
+contentView : Address Action -> Model -> Html
+contentView address model =
+  case (TransitRouter.getRoute model) of
+
+    Home ->
+      homeView address model
+    
+    --- and so on
+
+```
+
+Now for animations, there is `getTransition`, to be used with [elm-transit-style](http://package.elm-lang.org/packages/etaque/elm-transit-style/latest) (or directly with `Transit.getStatus` and `Transit.getValue` from [elm-transit](http://package.elm-lang.org/packages/etaque/elm-transit/latest) for more insights).
+
+```elm
+contentView : Address Action -> Model -> Html
+contentView address model =
+  div
+    [ style (TransitStyle.fadeSlideLeft 100 (getTransition model)) ]
+    [ contentView address model ]
+```
+
+Use `pushPathAddress` for link handling, for instance within that kind of helper:
+
+```elm
+clickTo : String -> List Attribute
+clickTo path =
+  [ href path
+  , onWithOptions
+      "click"
+      { stopPropagation = True, preventDefault = True }
+      Json.value
+      (\_ -> message TransitRouter.pushPathAddress path)
+  ]
+```
