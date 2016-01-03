@@ -2,7 +2,7 @@
 
     elm package install etaque/elm-transit-router
 
-Drop-in router with animated route transitions for single page apps in [Elm](http://elm-lang.org/).
+Drop-in router with animated route transitions for single page apps in [Elm](http://elm-lang.org/), extracted from (and used in) [Tacks](https://github.com/etaque/tacks/tree/master/client/src).
 
 
 ## Features
