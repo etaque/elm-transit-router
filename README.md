@@ -1,8 +1,8 @@
 # Elm Transit Router
 
-Drop-in router with animated route transitions for single page apps in [Elm](http://elm-lang.org/).
-
     elm package install etaque/elm-transit-router
+
+Drop-in router with animated route transitions for single page apps in [Elm](http://elm-lang.org/).
 
 
 ## Features
