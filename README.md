@@ -141,3 +141,37 @@ clickTo path =
       (\_ -> message TransitRouter.pushPathAddress path)
   ]
 ```
+
+## Subrouting transitions
+
+If you app contains submenus, you might want to adapt the scope of transition animation, ie you only want to animate the submenu content when you switch from a submenu item to another.
+
+A good way to do that is to create a type to indicate the current route switch happening, and to store it in your model, so you will be able to adapt the animation in your views. Let's say you have an admin submenu:
+
+```elm
+type RouteSwitch = Global | InAdmin | NoSwitch
+
+type alias Model = TransitRouter.WithRoute Route 
+  { foo: String
+  , routeSwitch : RouteSwitch
+  }
+```
+
+Types are in place, but we still need to set `routeSwitch` value, and `Config.mountRoute` is the right place for that as it provides previous and new route, so you can compare them and decide what is the current switch:
+
+```elm
+mountRoute : Route -> Route -> Model -> (Model, Effects Action)
+mountRoute prevRoute newRoute model =
+  let
+    routeSwitch = case (prevRoute, newRoute) of
+      (Admin _, Admin _) ->
+        InAdmin
+      _ ->
+        Global
+    newModel = { model | routeSwitch = routeSwitch }
+  in
+    case newRoute of
+      ...
+```
+
+Then you have everything in your hands in order to show animation in the right view, be it global content or admin content only.
