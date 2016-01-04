@@ -123,8 +123,8 @@ contentView address model =
 Now for animations, there is `getTransition`, to be used with [elm-transit-style](http://package.elm-lang.org/packages/etaque/elm-transit-style/latest) (or directly with `Transit.getStatus` and `Transit.getValue` from [elm-transit](http://package.elm-lang.org/packages/etaque/elm-transit/latest)).
 
 ```elm
-contentView : Address Action -> Model -> Html
-contentView address model =
+view : Address Action -> Model -> Html
+view address model =
   div
     [ style (TransitStyle.fadeSlideLeft 100 (getTransition model)) ]
     [ contentView address model ]
