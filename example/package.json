@@ -1,0 +1,15 @@
+{
+  "name": "elm-transit-router-example",
+  "version": "1.0.0",
+  "description": "Example app for elm-transit-router",
+  "scripts": {
+    "start": "npm run build-elm && npm run start-server",
+    "build-elm": "elm make src/Main.elm --output dist/example.js",
+    "start-server": "./node_modules/local-web-server/bin/cli.js -s index.html"
+  },
+  "author": "Emilien Taque",
+  "homepage": "https://github.com/etaque/elm-transit-router#readme",
+  "devDependencies": {
+    "local-web-server": "^1.1.0"
+  }
+}

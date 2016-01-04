@@ -11,6 +11,8 @@ Drop-in router with animated route transitions for single page apps in [Elm](htt
 * Enables animated transition on route changes, thanks to [elm-transit](http://package.elm-lang.org/packages/etaque/elm-transit/latest)
 * Provides a simple `Signal.Address String` for navigation 
 
+There is a projet example with a minimal usage of the router [right here](./example).
+
 
 ## Usage
 
