@@ -146,7 +146,7 @@ clickTo path =
 
 ## Subrouting transitions
 
-If you app contains submenus, you might want to adapt the scope of transition animation, ie you only want to animate the submenu content when you switch from a submenu item to another.
+If you app contains submenus, you might want to adapt the scope of transition animation, ie you only want to animate the submenu content when you switch from a submenu item to another, not the whole content of your page.
 
 A good way to do that is to create a type to indicate the current route switch happening, and to store it in your model, so you will be able to adapt the animation in your views. Let's say you have an admin submenu:
 
