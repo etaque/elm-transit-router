@@ -11,10 +11,11 @@ import TransitRouter exposing (getTransition)
 
 import Model exposing (..)
 import Routes exposing (..)
+import TaskPage
 
 
 view : Address Action -> Model -> Html
-view _ model =
+view address model =
   div
     [ ]
     [ h1 [] [ text "Elm TransitRouter example" ]
@@ -22,18 +23,21 @@ view _ model =
         [ a (clickTo <| Routes.encode Home) [ text "Home" ]
         , a (clickTo <| Routes.encode (Page 1)) [ text "Page 1" ]
         , a (clickTo <| Routes.encode (Page 2)) [ text "Page 2" ]
+        , a (clickTo <| Routes.encode (TaskPage)) [ text "Task" ]
         ]
     , div
         [ class "content"
         , style (TransitStyle.fadeSlideLeft 100 (getTransition model))
         ]
-        [ text <| case (TransitRouter.getRoute model) of
+        [ case (TransitRouter.getRoute model) of
             Home ->
-              "This is home"
+              text <| "This is home"
             Page _ ->
-              "This is page " ++ toString model.page
+              text <| "This is page " ++ toString model.page
+            TaskPage ->
+              TaskPage.view (Signal.forwardTo address TaskPageAction) model.taskModel
             EmptyRoute ->
-              ""
+              text <| ""
         ]
     ]
 
