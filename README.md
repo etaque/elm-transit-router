@@ -144,6 +144,33 @@ clickTo path =
   ]
 ```
 
+### Routing with Effects
+
+Suppose you are in the module of one of the screens and you want to switch routes after handling an action (for instance after handling the result from a task). You can do this by using the redirect effect:
+
+```elm
+redirect : Routes.Route -> Effects ()
+redirect route =
+  Routes.toPath route
+    |> Signal.send TransitRouter.pushPathAddress
+    |> Effects.task
+```
+
+In the update function of the screen module you will not have access to the `RouteAction` action, since it is defined in the main app module. To be able to make the effect work in your update function, map it to a null operation:
+
+```elm
+update : Action -> Model -> (Model, Effects Action)
+update action model =
+  case action of
+
+    NoOp ->
+      (model, Effects.none)
+
+    TaskCompleted ->
+      (model, Effects.map (\_ -> NoOp) (redirect Home))
+```
+
+
 ## Subrouting transitions
 
 If you app contains submenus, you might want to adapt the scope of transition animation, ie you only want to animate the submenu content when you switch from a submenu item to another, not the whole content of your page.

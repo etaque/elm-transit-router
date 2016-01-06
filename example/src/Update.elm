@@ -5,12 +5,14 @@ import TransitRouter
 
 import Model exposing (..)
 import Routes exposing (..)
+import TaskPage
 
 
 initialModel : Model
 initialModel =
   { transitRouter = TransitRouter.empty EmptyRoute
   , page = 0
+  , taskModel = TaskPage.init
   }
 
 
@@ -41,6 +43,11 @@ update action model =
     NoOp ->
       (model, Effects.none)
 
+    TaskPageAction taskAction ->
+      let (model', effects) = TaskPage.update taskAction model.taskModel
+      in ( { model | taskModel = model' }
+         , Effects.map TaskPageAction effects )
+
     RouterAction routeAction ->
       TransitRouter.update routerConfig routeAction model
 
@@ -57,6 +64,9 @@ mountRoute prevRoute route model =
 
     Page p ->
       ({ model | page = p }, Effects.none)
+
+    TaskPage ->
+      (model, Effects.none)
 
     EmptyRoute ->
       (model, Effects.none)
