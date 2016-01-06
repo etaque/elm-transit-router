@@ -102,7 +102,7 @@ empty route =
 {-| Start the router with this config and an initial path. Returns host's model and action. -}
 init : Config route action model -> String -> WithRoute route model -> Response (WithRoute route model) action
 init config path model =
-  update config (PathUpdated path) model
+  update config (SetRoute (config.routeDecoder path)) model
 
 
 -- Private: extract state from model
