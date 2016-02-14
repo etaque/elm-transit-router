@@ -57,7 +57,7 @@ A config should be prepared:
 
 ```elm
 routerConfig : TransitRouter.Config Route Action Model
-routerConfig :
+routerConfig =
   { mountRoute : Route -> Route -> Model -> (Model, Effects Action)
   , getDurations : Route -> Route -> Model -> (Float, Float)
   , actionWrapper : TransitRouter.Action -> Action
