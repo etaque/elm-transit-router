@@ -24,7 +24,7 @@ To be able to provide animated route transitions, **TransitRouter** (and **Trans
 Say you have an `Action` type wrapping `TransitRouter.Action`:
 
 ```elm
-type Action = Foo | ... | RouterAction TransitRouter.Action | NoOp
+type Action = Foo | ... | RouterAction (TransitRouter.Action Route) | NoOp
 ```
 
 Also a `Route` type to describe all routes in your apps:
@@ -46,7 +46,7 @@ Your `Model` is now enabled to work with `TransitRouter`. Initialize it with the
 initialModel : Model
 initialModel =
   { transitRouter = TransitRouter.empty EmptyRoute
-  , foo: ""
+  , foo = ""
   }
 ```
 
@@ -62,7 +62,7 @@ routerConfig : TransitRouter.Config Route Action Model
 routerConfig :
   { mountRoute : Route -> Route -> Model -> (Model, Effects Action)
   , getDurations : Route -> Route -> Model -> (Float, Float)
-  , actionWrapper : TransitRouter.Action -> Action
+  , actionWrapper : TransitRouter.Action Route -> Action
   , routeDecoder : String -> Route
   }
 ```
