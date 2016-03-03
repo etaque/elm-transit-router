@@ -62,7 +62,7 @@ routerConfig : TransitRouter.Config Route Action Model
 routerConfig :
   { mountRoute : Route -> Route -> Model -> (Model, Effects Action)
   , getDurations : Route -> Route -> Model -> (Float, Float)
-  , actionWrapper : (TransitRouter.Action Route) -> Action
+  , actionWrapper : TransitRouter.Action Route -> Action
   , routeDecoder : String -> Route
   }
 ```
