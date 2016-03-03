@@ -46,7 +46,7 @@ Your `Model` is now enabled to work with `TransitRouter`. Initialize it with the
 initialModel : Model
 initialModel =
   { transitRouter = TransitRouter.empty EmptyRoute
-  , foo: ""
+  , foo = ""
   }
 ```
 
